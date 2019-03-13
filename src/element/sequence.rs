@@ -19,7 +19,7 @@ impl Element for Sequence {
         Kind::Sequence
     }
 
-    fn parse(&self, parser: &Parser) -> Result<Node, &'static str> {
+    fn parse(&self, _parser: &Parser) -> Result<Node, &'static str> {
         Err("not implemented")
     }
 
