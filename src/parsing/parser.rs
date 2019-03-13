@@ -7,7 +7,7 @@ pub struct Parser<'a> {
     query: &'a str,
     keyword_re: &'a Regex,
     kw_cache: HashMap<usize, Option<&'a str>>,
-    node: Node,
+    pub node: Node,
 }
 
 impl<'a> Parser<'a> {

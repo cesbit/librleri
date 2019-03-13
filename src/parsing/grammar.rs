@@ -1,10 +1,9 @@
-use super::node::Node;
+use regex::Regex;
+use std::rc::Rc;
+
 use super::parser::Parser;
 use super::parseresult::ParseResult;
 use crate::element::Element;
-
-use regex::Regex;
-use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct Grammar {

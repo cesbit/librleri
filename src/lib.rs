@@ -19,6 +19,11 @@ mod tests {
 
         let g = Grammar::new(seq2, None);
 
+        let res = g.parse("hi Iris!");
+
+        println!("Is valid: {}", res.is_valid());
+
+
         // let hi_ptr: *const Element = std::rc::Rc::into_raw(hi);
 
 

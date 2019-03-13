@@ -1,6 +1,7 @@
 [package]
 name = "librleri"
 version = "0.1.0"
+license = "MIT"
 authors = ["Jeroen van der Heijden <jeroen@transceptor.technology>"]
 edition = "2018"
 
