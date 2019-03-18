@@ -1,13 +1,13 @@
 use regex::Regex;
 use std::collections::HashMap;
 use super::node::Node;
-use crate::element::Element;
+use crate::element::Elem;
 
 pub struct Parser<'a> {
     query: &'a str,
     keyword_re: &'a Regex,
     kw_cache: HashMap<usize, Option<&'a str>>,
-    pub node: Node,
+    // pub node: Node,
 }
 
 impl<'a> Parser<'a> {
@@ -17,11 +17,11 @@ impl<'a> Parser<'a> {
             query,
             keyword_re,
             kw_cache: HashMap::new(),
-            node: Node::new(0),
+            // node: Node::new(0, entry),
         }
     }
 
-    fn kw_match(&mut self, pos: usize) {
+    pub fn kw_match(&mut self, pos: usize) -> &Option<&'a str> {
         let query = &self.query;
         let keyword_re = &self.keyword_re;
 
@@ -30,10 +30,10 @@ impl<'a> Parser<'a> {
             .or_insert_with(|| match keyword_re.find(&query[pos..]) {
                 Some(x) => Some(&query[pos..x.end()]),
                 None => None,
-            });
+            })
     }
 
-    fn walk(&self, parent: &mut Node, elem: &Element) {
+    pub fn walk(&mut self, parent: &mut Node, elem: &Elem) {
         let mut char_indices = self.query.char_indices();
         loop {
             match char_indices.next() {
@@ -47,6 +47,6 @@ impl<'a> Parser<'a> {
             }
         }
 
-        elem.parse(self);
+        elem.parse(elem, self, parent);
     }
 }

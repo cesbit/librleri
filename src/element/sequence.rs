@@ -1,4 +1,4 @@
-use super::{Element, Kind};
+use super::{Elem, Element, Kind};
 use crate::parsing::node::Node;
 use crate::parsing::parser::Parser;
 use std::fmt;
@@ -7,7 +7,7 @@ use std::rc::Rc;
 #[derive(Debug)]
 pub struct Sequence {
     id: Option<i32>,
-    elements: Vec<Rc<dyn Element>>,
+    elements: Vec<Elem>,
 }
 
 impl Element for Sequence {
@@ -19,8 +19,8 @@ impl Element for Sequence {
         Kind::Sequence
     }
 
-    fn parse(&self, _parser: &Parser) -> Result<Node, &'static str> {
-        Err("not implemented")
+    fn parse(&self, _elem: &Elem, _parser: &mut Parser, _parent: &mut Node) -> Option<Node> {
+        None
     }
 
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -29,11 +29,11 @@ impl Element for Sequence {
 }
 
 impl Sequence {
-    pub fn new(elements: Vec<Rc<dyn Element>>) -> Rc<dyn Element> {
+    pub fn new(elements: Vec<Elem>) -> Elem {
         Rc::new(Self { id: None, elements })
     }
 
-    pub fn with_id(id: i32, elements: Vec<Rc<dyn Element>>) -> Rc<dyn Element> {
+    pub fn with_id(id: i32, elements: Vec<Elem>) -> Elem {
         Rc::new(Self {
             id: Some(id),
             elements,

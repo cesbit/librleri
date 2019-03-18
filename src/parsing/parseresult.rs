@@ -1,5 +1,6 @@
 use super::node::Node;
 
+#[allow(dead_code)]
 pub struct ParseResult {
     is_valid: bool,
     query: String,

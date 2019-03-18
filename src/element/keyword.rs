@@ -1,7 +1,7 @@
 use std::fmt;
 use std::rc::Rc;
 
-use super::{Element, Kind};
+use super::{Elem, Element, Kind};
 use crate::parsing::node::Node;
 use crate::parsing::parser::Parser;
 
@@ -14,26 +14,17 @@ use crate::parsing::parser::Parser;
 /// Case sensitive example:
 ///
 /// ```
-/// use libleri::{Keyword, Grammar};
+/// use librleri::*;
 ///
-/// let hello = keyword!("hello");
-/// let g = grammar!(&hello);
+/// let hello = Keyword::new("hello", false);
+/// let g = Grammar::new(hello, None);
 ///
-/// assert_eq!(parse(grammar, "hello").is_valid, true);
-/// assert_eq!(parse(grammar, "Hello").is_valid, false);
+/// // assert_eq!(g.parse("hello").is_valid(), true);
+/// // assert_eq!(g.parse("Hello").is_valid(), false);
 /// ```
 ///
 /// Case in-sensitive example:
 ///
-/// ```
-/// use libleri::{keyword, Keyword, Grammar};
-///
-/// let hello = keyword!("hello", true);
-/// let g = Grammar::new(&hello);
-///
-/// assert_eq!(g.parse("hello").is_valid(), true);
-/// assert_eq!(g.parse("Hello").is_valid(), true);
-/// ```
 #[derive(Debug)]
 pub struct Keyword {
     id: Option<i32>,
@@ -42,7 +33,7 @@ pub struct Keyword {
 }
 
 impl Keyword {
-    pub fn new(keyword: &str, ignore_case: bool) -> Rc<dyn Element> {
+    pub fn new(keyword: &str, ignore_case: bool) -> Elem {
         let keyword = if ignore_case {
             keyword.to_lowercase()
         } else {
@@ -55,7 +46,7 @@ impl Keyword {
         })
     }
 
-    pub fn with_id(id: i32, keyword: &str, ignore_case: bool) -> Rc<dyn Element> {
+    pub fn with_id(id: i32, keyword: &str, ignore_case: bool) -> Elem {
         Rc::new(Keyword {
             id: Some(id),
             keyword: String::from(keyword),
@@ -69,8 +60,20 @@ impl Element for Keyword {
         self.id
     }
 
-    fn parse(&self, parser: &Parser) -> Result<Node, &'static str> {
-        Err("not implemented")
+    fn parse(&self, elem: &Elem, parser: &mut Parser, parent: &mut Node) -> Option<Node> {
+        let mat = match parser.kw_match(parent.pos) {
+            Some(kw) => kw,
+            None => "",
+        };
+
+        if (self.ignore_case && mat.to_lowercase() == self.keyword)
+            || (!self.ignore_case && mat == self.keyword)
+        {
+            let node = Node::new(parent.pos, mat.len(), Rc::clone(elem));
+            parent.len += node.len;
+            parent.children.push(node);
+        }
+        None
     }
 
     fn kind(&self) -> Kind {
