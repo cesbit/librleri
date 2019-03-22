@@ -11,21 +11,19 @@ pub mod sequence;
 pub type Elem = Rc<RefCell<dyn Element>>;
 
 #[derive(Debug)]
-pub enum Kind {
-    Forward,
-    Keyword,
-    Sequence,
+pub enum Kind<'k> {
+    Forward(&'k forward::Forward),
+    Keyword(&'k keyword::Keyword),
+    Sequence(&'k sequence::Sequence),
 }
 
 pub trait Element {
     fn parse(&self, elem: &Elem, parser: &mut Parser, parent: &mut Node) -> bool;
     fn free(&mut self) {}
     fn id(&self) -> Option<i32>;
-    fn kind(&self) -> Kind;
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result;
-    fn as_mut_forward(&mut self) -> Option<&mut forward::Forward> {
-        None
-    }
+    fn kind(&self) -> Kind;
+    fn kind_mut(&mut self) -> Kind;
 }
 
 impl Debug for Element {

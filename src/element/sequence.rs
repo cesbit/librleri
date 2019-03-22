@@ -17,11 +17,16 @@ impl Element for Sequence {
     }
 
     fn kind(&self) -> Kind {
-        Kind::Sequence
+        Kind::Sequence(self)
     }
 
+    fn kind_mut(&mut self) -> Kind {
+        Kind::Sequence(self)
+    }
     fn parse(&self, _elem: &Elem, _parser: &mut Parser, _parent: &mut Node) -> bool {
-        false
+        for elem in &self.elements {
+            parser.walk()
+        }
     }
 
     fn free(&mut self) {

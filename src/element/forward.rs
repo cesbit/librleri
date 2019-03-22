@@ -49,15 +49,15 @@ impl Element for Forward {
     }
 
     fn kind(&self) -> Kind {
-        Kind::Forward
+        Kind::Forward(self)
+    }
+
+    fn kind_mut(&mut self) -> Kind {
+        Kind::Forward(self)
     }
 
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self.kind())
-    }
-
-    fn as_mut_forward(&mut self) -> Option<&mut Forward> {
-        Some(self)
+        write!(f, "<Fwd>")
     }
 }
 

@@ -6,4 +6,5 @@ authors = ["Jeroen van der Heijden <jeroen@transceptor.technology>"]
 edition = "2018"
 
 [dependencies]
-regex = "1"
+regex = "1.1.2"
+matches = "0.1.8"

@@ -89,7 +89,11 @@ impl Element for Keyword {
     }
 
     fn kind(&self) -> Kind {
-        Kind::Keyword
+        Kind::Keyword(self)
+    }
+
+    fn kind_mut(&mut self) -> Kind {
+        Kind::Keyword(self)
     }
 
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -107,11 +111,11 @@ macro_rules! keyword {
         crate::element::keyword::Keyword::new($keyword, $ignore_case)
     };
 
-    ( $id:expr; $keyword:expr ) => {
+    ( id=$id:expr; $keyword:expr ) => {
         crate::element::keyword::Keyword::with_id($id, $keyword, false)
     };
 
-    ( $id:expr; $keyword:expr, $ignore_case:expr ) => {
+    ( id=$id:expr; $keyword:expr, $ignore_case:expr ) => {
         crate::element::keyword::Keyword::with_id($id, $keyword, $ignore_case)
     };
 }
