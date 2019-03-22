@@ -71,8 +71,8 @@ impl Element for Keyword {
         self.id
     }
 
-    fn parse(&self, elem: &Elem, parser: &mut Parser, parent: &mut Node) -> bool {
-        let mat = match parser.kw_match(parent.pos) {
+    fn parse(&self, this: &Elem, parser: &mut Parser, parent: &mut Node) -> bool {
+        let mat = match parser.kw_match(parent.pos + parent.len) {
             Some(kw) => kw,
             None => "no_match",
         };
@@ -80,7 +80,7 @@ impl Element for Keyword {
         if (self.ignore_case && mat.to_lowercase() == self.keyword)
             || (!self.ignore_case && mat == self.keyword)
         {
-            let node = Node::new(parent.pos, mat.len(), Rc::clone(elem));
+            let node = Node::new(parent.pos, mat.len(), Rc::clone(this));
             parent.len += node.len;
             parent.children.push(node);
             return true;

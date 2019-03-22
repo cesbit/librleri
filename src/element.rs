@@ -18,7 +18,7 @@ pub enum Kind<'k> {
 }
 
 pub trait Element {
-    fn parse(&self, elem: &Elem, parser: &mut Parser, parent: &mut Node) -> bool;
+    fn parse(&self, this: &Elem, parser: &mut Parser, parent: &mut Node) -> bool;
     fn free(&mut self) {}
     fn id(&self) -> Option<i32>;
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result;

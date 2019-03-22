@@ -23,10 +23,18 @@ impl Element for Sequence {
     fn kind_mut(&mut self) -> Kind {
         Kind::Sequence(self)
     }
-    fn parse(&self, _elem: &Elem, _parser: &mut Parser, _parent: &mut Node) -> bool {
+    fn parse(&self, this: &Elem, parser: &mut Parser, parent: &mut Node) -> bool {
+        let mut node = Node::new(parent.pos, 0, Rc::clone(this));
+
         for elem in &self.elements {
-            parser.walk()
+            if !parser.walk(&mut node, elem) {
+                return false;
+            }
         }
+
+        parent.len += node.len;
+        parent.children.push(node);
+        true
     }
 
     fn free(&mut self) {
