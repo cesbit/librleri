@@ -1,9 +1,11 @@
 mod element;
 mod parsing;
 
-pub use crate::element::Element;
+pub use crate::element::forward::Forward;
 pub use crate::element::keyword::Keyword;
 pub use crate::element::sequence::Sequence;
+pub use crate::element::Element;
+pub use crate::element::Elem;
 pub use crate::parsing::grammar::Grammar;
 
 
@@ -14,17 +16,26 @@ mod tests {
     #[test]
     fn keyword_macro() {
         let hi = keyword!("hi");
-        let seq1 = sequence![5; &hi, &hi];
-        let seq2 = sequence![&seq1, &hi];
+        assert_eq!(hi.borrow().id(), None);
 
-        let g = Grammar::new(seq2, None);
+
+        let seq1 = sequence![5; &hi, &keyword!("hello"), &fwd];
+        let seq2 = sequence![&seq1, &hi, &fwd];
+
+
+        {
+            let mut rfwd = fwd.borrow_mut();
+            rfwd.as_mut_forward().unwrap().set_forward(&seq1);
+        }
+
+        let g = Grammar::new(&seq2, None);
+
 
         let res = g.parse("hi Iris!");
 
         println!("Is valid: {}", res.is_valid());
 
         // let hi_ptr: *const Element = std::rc::Rc::into_raw(hi);
-
 
         // std::rc::Rc::try_unwrap(hi)
         // do_work(hi.downcast_ref());

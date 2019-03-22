@@ -1,8 +1,9 @@
-use regex::Regex;
+use super::node::Node;
 use super::parser::Parser;
 use super::parseresult::ParseResult;
-use super::node::Node;
 use crate::element::Elem;
+use regex::Regex;
+use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct Grammar {
@@ -11,10 +12,13 @@ pub struct Grammar {
 }
 
 impl Grammar {
-    pub fn new(entry: Elem, keyword_re: Option<Regex>) -> Grammar {
-        let keyword_re = keyword_re.unwrap_or_else(|| Regex::new(r"^\\w+").unwrap());
+    pub fn new(entry: &Elem, keyword_re: Option<Regex>) -> Grammar {
+        let keyword_re = keyword_re.unwrap_or_else(|| Regex::new(r"^\w+").unwrap());
 
-        Grammar { entry, keyword_re }
+        Grammar {
+            entry: Rc::clone(entry),
+            keyword_re,
+        }
     }
 
     pub fn parse(&self, query: &str) -> ParseResult {
@@ -22,10 +26,16 @@ impl Grammar {
 
         let mut node = Node::new(0, 0, std::rc::Rc::clone(&self.entry));
 
-        parser.walk(&mut node, &self.entry);
+        let is_valid = parser.walk(&mut node, &self.entry);
 
-        let pr = ParseResult::new(false, query, node);
+        let pr = ParseResult::new(is_valid, query, node);
 
         pr
+    }
+}
+
+impl Drop for Grammar {
+    fn drop(&mut self) {
+        self.entry.borrow_mut().free();
     }
 }

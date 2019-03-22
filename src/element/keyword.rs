@@ -1,9 +1,18 @@
+use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
 
 use super::{Elem, Element, Kind};
 use crate::parsing::node::Node;
 use crate::parsing::parser::Parser;
+
+
+#[derive(Debug)]
+pub struct Keyword {
+    id: Option<i32>,
+    keyword: String,
+    ignore_case: bool,
+}
 
 /// A `Keyword` element.
 ///
@@ -17,21 +26,23 @@ use crate::parsing::parser::Parser;
 /// use librleri::*;
 ///
 /// let hello = Keyword::new("hello", false);
-/// let g = Grammar::new(hello, None);
+/// let g = Grammar::new(&hello, None);
 ///
-/// // assert_eq!(g.parse("hello").is_valid(), true);
-/// // assert_eq!(g.parse("Hello").is_valid(), false);
+/// assert_eq!(g.parse("hello").is_valid(), true);
+/// assert_eq!(g.parse("Hello").is_valid(), false);
 /// ```
 ///
 /// Case in-sensitive example:
 ///
-#[derive(Debug)]
-pub struct Keyword {
-    id: Option<i32>,
-    keyword: String,
-    ignore_case: bool,
-}
-
+/// ```
+/// use librleri::*;
+///
+/// let hello = Keyword::new("hello", true);
+/// let g = Grammar::new(&hello, None);
+///
+/// assert_eq!(g.parse("hello").is_valid(), true);
+/// assert_eq!(g.parse("Hello").is_valid(), true);
+/// ```
 impl Keyword {
     pub fn new(keyword: &str, ignore_case: bool) -> Elem {
         let keyword = if ignore_case {
@@ -39,19 +50,19 @@ impl Keyword {
         } else {
             String::from(keyword)
         };
-        Rc::new(Keyword {
+        Rc::new(RefCell::new(Keyword {
             id: None,
             keyword,
             ignore_case,
-        })
+        }))
     }
 
     pub fn with_id(id: i32, keyword: &str, ignore_case: bool) -> Elem {
-        Rc::new(Keyword {
+        Rc::new(RefCell::new(Keyword {
             id: Some(id),
             keyword: String::from(keyword),
             ignore_case,
-        })
+        }))
     }
 }
 
@@ -60,10 +71,10 @@ impl Element for Keyword {
         self.id
     }
 
-    fn parse(&self, elem: &Elem, parser: &mut Parser, parent: &mut Node) -> Option<Node> {
+    fn parse(&self, elem: &Elem, parser: &mut Parser, parent: &mut Node) -> bool {
         let mat = match parser.kw_match(parent.pos) {
             Some(kw) => kw,
-            None => "",
+            None => "no_match",
         };
 
         if (self.ignore_case && mat.to_lowercase() == self.keyword)
@@ -72,8 +83,9 @@ impl Element for Keyword {
             let node = Node::new(parent.pos, mat.len(), Rc::clone(elem));
             parent.len += node.len;
             parent.children.push(node);
+            return true;
         }
-        None
+        false
     }
 
     fn kind(&self) -> Kind {

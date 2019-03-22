@@ -33,7 +33,7 @@ impl<'a> Parser<'a> {
             })
     }
 
-    pub fn walk(&mut self, parent: &mut Node, elem: &Elem) {
+    pub fn walk(&mut self, parent: &mut Node, elem: &Elem) -> bool {
         let mut char_indices = self.query.char_indices();
         loop {
             match char_indices.next() {
@@ -47,6 +47,6 @@ impl<'a> Parser<'a> {
             }
         }
 
-        elem.parse(elem, self, parent);
+        elem.borrow().parse(elem, self, parent)
     }
 }
