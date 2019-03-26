@@ -63,16 +63,6 @@ impl Sequence {
 
 #[macro_export]
 macro_rules! sequence {
-    ( $id:expr; $( $elements:expr ),* ) => {
-        {
-            let mut elements = Vec::new();
-            $(
-                elements.push(std::rc::Rc::clone($elements));
-            )*
-            crate::element::sequence::Sequence::with_id($id, elements)
-        }
-    };
-
     ( $( $elements:expr ),* ) => {
         {
             let mut elements = Vec::new();
@@ -80,6 +70,16 @@ macro_rules! sequence {
                 elements.push(std::rc::Rc::clone($elements));
             )*
             crate::element::sequence::Sequence::new(elements)
+        }
+    };
+
+    ( id=$id:expr; $( $elements:expr ),* ) => {
+        {
+            let mut elements = Vec::new();
+            $(
+                elements.push(std::rc::Rc::clone($elements));
+            )*
+            crate::element::sequence::Sequence::with_id($id, elements)
         }
     };
 }

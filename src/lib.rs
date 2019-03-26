@@ -29,51 +29,25 @@ mod tests {
         assert_eq!(Grammar::new(&hi_case_insensitive, None).parse("Hi").is_valid(), true);
     }
 
-
     #[test]
     fn sequence_macro() {
         let seq = sequence!(&keyword!("hello"), &keyword!("world"));
 
         assert_eq!(seq.borrow().id(), None);
         assert_matches!(seq.borrow().kind(), Kind::Sequence(_));
-        assert_eq!(Grammar::new(&seq, None).parse("hello  world").is_valid(), true);
+        assert_eq!(Grammar::new(&seq, None).parse("hello  world  ").is_valid(), true);
+        assert_eq!(Grammar::new(&seq, None).parse("hello  world! ").is_valid(), false);
     }
-        // let seq1 = sequence![5; &hi, &keyword!("hello"), &fwd];
-        // let seq2 = sequence![&seq1, &hi, &fwd];
 
-        // {
-        //     let mut rfwd = fwd.borrow_mut();
-        //     rfwd.as_mut_forward().unwrap().set_forward(&seq1);
-        // }
+    #[test]
+    fn forward_macro() {
+        let fwd = forward!();
+        let seq = sequence!(&keyword!("hello"), &fwd);
+        forward_set!(fwd, &keyword!(id=42; "world"));
 
-        // let g = Grammar::new(&seq2, None);
+        assert_eq!(fwd.borrow().id(), Some(42));
+        assert_eq!(Grammar::new(&seq, None).parse("hello  world  ").is_valid(), true);
+        assert_eq!(Grammar::new(&seq, None).parse("hello  world! ").is_valid(), false);
+    }
 
-        // let res = g.parse("hi Iris!");
-
-        // println!("Is valid: {}", res.is_valid());
-
-        // let hi_ptr: *const Element = std::rc::Rc::into_raw(hi);
-
-        // std::rc::Rc::try_unwrap(hi)
-        // do_work(hi.downcast_ref());
-
-        // let x = vec![1, 2, 3];
-
-        // let res = Rc::try_unwrap(hi);
-        // match res {
-
-        // }
-
-        // match weak_five.as_any() {}
-
-        // let hi_ptr: *const Element = Rc::into_raw(hi);
-
-        // match hi.as_any() {
-        //     Keyword<> => println!("Keyword..."),
-        //     _ => println!("Other..."),
-        // }
-
-        // let g = Grammar::new(Box::new(&seq2));
-
-        // println!("{:?}", g);
 }

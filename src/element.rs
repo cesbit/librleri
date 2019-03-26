@@ -13,6 +13,7 @@ pub type Elem = Rc<RefCell<dyn Element>>;
 #[derive(Debug)]
 pub enum Kind<'k> {
     Forward(&'k forward::Forward),
+    ForwardMut(&'k mut forward::Forward),
     Keyword(&'k keyword::Keyword),
     Sequence(&'k sequence::Sequence),
 }

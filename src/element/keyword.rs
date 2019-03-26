@@ -7,13 +7,6 @@ use crate::parsing::node::Node;
 use crate::parsing::parser::Parser;
 
 
-#[derive(Debug)]
-pub struct Keyword {
-    id: Option<i32>,
-    keyword: String,
-    ignore_case: bool,
-}
-
 /// A `Keyword` element.
 ///
 /// Keywords must match a grammar.
@@ -43,6 +36,13 @@ pub struct Keyword {
 /// assert_eq!(g.parse("hello").is_valid(), true);
 /// assert_eq!(g.parse("Hello").is_valid(), true);
 /// ```
+#[derive(Debug)]
+pub struct Keyword {
+    id: Option<i32>,
+    keyword: String,
+    ignore_case: bool,
+}
+
 impl Keyword {
     pub fn new(keyword: &str, ignore_case: bool) -> Elem {
         let keyword = if ignore_case {
