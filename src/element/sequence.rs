@@ -23,6 +23,7 @@ impl Element for Sequence {
     fn kind_mut(&mut self) -> Kind {
         Kind::Sequence(self)
     }
+
     fn parse(&self, this: &Elem, parser: &mut Parser, parent: &mut Node) -> bool {
         let mut node = Node::new(parent.pos, 0, Rc::clone(this));
 
@@ -37,9 +38,9 @@ impl Element for Sequence {
         true
     }
 
-    fn free(&mut self) {
+    fn unknot(&mut self) {
         for elem in &self.elements {
-            elem.borrow_mut().free();
+            elem.borrow_mut().unknot();
         }
     }
 

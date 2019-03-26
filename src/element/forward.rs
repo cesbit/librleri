@@ -31,7 +31,7 @@ impl Element for Forward {
         self.id
     }
 
-    fn free(&mut self) {
+    fn unknot(&mut self) {
         self.fwd = None;
     }
 

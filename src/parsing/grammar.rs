@@ -53,6 +53,6 @@ impl Grammar {
 
 impl Drop for Grammar {
     fn drop(&mut self) {
-        self.entry.borrow_mut().free();
+        self.entry.borrow_mut().unknot();
     }
 }
